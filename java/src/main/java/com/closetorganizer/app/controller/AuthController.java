@@ -36,16 +36,16 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    @PostMapping("/signup")
+    @PostMapping({"/signup", "/register"})
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest()
-                    .body("Username is already taken!");
+                    .body(new AuthResponse(null, null, null, "Username is already taken!"));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest()
-                    .body("Email is already registered!");
+                    .body(new AuthResponse(null, null, null, "Email is already registered!"));
         }
 
         User user = new User();
@@ -55,30 +55,40 @@ public class AuthController {
 
         User result = userRepository.save(user);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                signUpRequest.getUsername(),
+                signUpRequest.getPassword()
+            )
+        );
 
-        return ResponseEntity.created(location)
-                .body("User registered successfully");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = tokenProvider.generateToken(authentication);
+
+        return ResponseEntity.ok(new AuthResponse(jwt, result.getUsername(), result.getEmail()));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsernameOrEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.generateToken(authentication);
-        User user = userRepository.findByUsername(loginRequest.getUsernameOrEmail())
-                .orElseGet(() -> userRepository.findByEmail(loginRequest.getUsernameOrEmail())
-                        .orElseThrow(() -> new RuntimeException("User not found")));
+            String jwt = tokenProvider.generateToken(authentication);
+            User user = userRepository.findByUsername(loginRequest.getUsernameOrEmail())
+                    .orElseGet(() -> userRepository.findByEmail(loginRequest.getUsernameOrEmail())
+                            .orElseThrow(() -> new RuntimeException("User not found")));
 
-        return ResponseEntity.ok(new AuthResponse(jwt, user.getUsername(), user.getEmail()));
+            return ResponseEntity.ok(new AuthResponse(jwt, user.getUsername(), user.getEmail()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new AuthResponse(null, null, null, "Invalid username/email or password"));
+        }
     }
 }
