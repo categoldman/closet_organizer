@@ -1,27 +1,28 @@
 version: '3.8'
 
 services:
-  closetOrganizer-backend:
+  backend:
     build: 
       context: ./java
       dockerfile: Dockerfile
-    container_name: closetOrganizer-backend
+    container_name: closet-organizer-backend
     ports:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8081
     volumes:
       - ./uploads:/app/uploads
 
-  closetOrganizer-frontend:
+  frontend:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: closetOrganizer-frontend
+    container_name: closet-organizer-frontend
     ports:
       - "3000:3000"
     environment:
       - REACT_APP_API_URL=http://localhost:8081
       - WATCHPACK_POLLING=true
     depends_on:
-      - closetOrganizer-backend
+      - backend
