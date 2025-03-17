@@ -8,11 +8,14 @@ import {
   Typography,
   IconButton,
   Button,
+<<<<<<< HEAD
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
+=======
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -26,8 +29,11 @@ const OutfitCreator = () => {
   const [currentOutfit, setCurrentOutfit] = useState([]);
   const [savedOutfits, setSavedOutfits] = useState([]);
   const [currentOutfitIndex, setCurrentOutfitIndex] = useState(0);
+<<<<<<< HEAD
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+=======
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
 
   useEffect(() => {
     fetchClothes();
@@ -59,6 +65,7 @@ const OutfitCreator = () => {
     }
   };
 
+<<<<<<< HEAD
   const saveOutfitToCalendar = async () => {
     if (!selectedDate || currentOutfit.length === 0) return;
 
@@ -75,6 +82,8 @@ const OutfitCreator = () => {
     }
   };
 
+=======
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
   const navigateOutfits = (direction) => {
     if (direction === 'next') {
       setCurrentOutfitIndex((prev) => 
@@ -141,6 +150,7 @@ const OutfitCreator = () => {
           </Grid>
         </AnimatePresence>
         {currentOutfit.length > 0 && (
+<<<<<<< HEAD
           <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
             <Button
               variant="contained"
@@ -175,6 +185,25 @@ const OutfitCreator = () => {
               Save Outfit
             </Button>
           </Box>
+=======
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={saveOutfit}
+            sx={{
+              mt: 2,
+              background: 'linear-gradient(45deg, #FF69B4 30%, #FFB6C1 90%)',
+              borderRadius: 20,
+              boxShadow: '0 3px 5px 2px rgba(255, 105, 180, .3)',
+              color: 'white',
+              '&:hover': {
+                background: 'linear-gradient(45deg, #FF1493 30%, #FF69B4 90%)',
+              },
+            }}
+          >
+            Save Outfit
+          </Button>
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
         )}
       </Box>
 
@@ -275,6 +304,7 @@ const OutfitCreator = () => {
           </Grid>
         ))}
       </Grid>
+<<<<<<< HEAD
 
       <Dialog open={showDatePicker} onClose={() => setShowDatePicker(false)}>
         <DialogTitle sx={{ color: '#FF69B4' }}>Choose a Date</DialogTitle>
@@ -303,6 +333,8 @@ const OutfitCreator = () => {
           </Button>
         </DialogActions>
       </Dialog>
+=======
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
     </Box>
   );
 };

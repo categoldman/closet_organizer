@@ -3,7 +3,10 @@ import { Container, Box, AppBar, Tabs, Tab, Button } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import ClothingList from './components/ClothingList';
 import OutfitCreator from './components/OutfitCreator';
+<<<<<<< HEAD
 import OutfitCalendar from './components/OutfitCalendar';
+=======
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
 import AuthPage from './components/Auth/AuthPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -49,7 +52,10 @@ const AppContent = () => {
           >
             <Tab label="My Closet" />
             <Tab label="Create Outfits" />
+<<<<<<< HEAD
             <Tab label="Outfit Calendar" />
+=======
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
           </Tabs>
           <Button
             color="inherit"
@@ -69,6 +75,7 @@ const AppContent = () => {
       </AppBar>
 
       <Container sx={{ mt: 4 }}>
+<<<<<<< HEAD
         {tabValue === 0 ? (
           <ClothingList />
         ) : tabValue === 1 ? (
@@ -76,6 +83,9 @@ const AppContent = () => {
         ) : (
           <OutfitCalendar />
         )}
+=======
+        {tabValue === 0 ? <ClothingList /> : <OutfitCreator />}
+>>>>>>> 8fc5ceb51c263e8f93ef7c2058e783adbf346f87
       </Container>
     </Box>
   );
