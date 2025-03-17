@@ -2,26 +2,29 @@ package com.closetorganizer.app.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${app.jwt.secret}")
+    @Value("${app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${app.jwt.expiration}")
+    @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    private Key key;
-
-    public JwtTokenProvider() {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(Authentication authentication) {
@@ -31,16 +34,16 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(Long.toString(userPrincipal.getUser().getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(key)
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -50,23 +53,22 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(authToken);
             return true;
-        } catch (SecurityException ex) {
-            // Invalid JWT signature
-            return false;
+        } catch (SignatureException ex) {
+            logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            // Invalid JWT token
-            return false;
+            logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            // Expired JWT token
-            return false;
+            logger.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            // Unsupported JWT token
-            return false;
+            logger.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            // JWT claims string is empty
-            return false;
+            logger.error("JWT claims string is empty");
         }
+        return false;
     }
 }

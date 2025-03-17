@@ -8,6 +8,11 @@ import {
   Typography,
   IconButton,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,6 +26,8 @@ const OutfitCreator = () => {
   const [currentOutfit, setCurrentOutfit] = useState([]);
   const [savedOutfits, setSavedOutfits] = useState([]);
   const [currentOutfitIndex, setCurrentOutfitIndex] = useState(0);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     fetchClothes();
@@ -49,6 +56,22 @@ const OutfitCreator = () => {
     if (currentOutfit.length > 0) {
       setSavedOutfits([...savedOutfits, currentOutfit]);
       setCurrentOutfit([]);
+    }
+  };
+
+  const saveOutfitToCalendar = async () => {
+    if (!selectedDate || currentOutfit.length === 0) return;
+
+    try {
+      await axios.post('/api/outfits/history', {
+        date: selectedDate,
+        items: currentOutfit,
+      });
+      setShowDatePicker(false);
+      setSelectedDate(null);
+      setCurrentOutfit([]);
+    } catch (error) {
+      console.error('Error saving outfit to calendar:', error);
     }
   };
 
@@ -118,23 +141,40 @@ const OutfitCreator = () => {
           </Grid>
         </AnimatePresence>
         {currentOutfit.length > 0 && (
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon />}
-            onClick={saveOutfit}
-            sx={{
-              mt: 2,
-              background: 'linear-gradient(45deg, #FF69B4 30%, #FFB6C1 90%)',
-              borderRadius: 20,
-              boxShadow: '0 3px 5px 2px rgba(255, 105, 180, .3)',
-              color: 'white',
-              '&:hover': {
-                background: 'linear-gradient(45deg, #FF1493 30%, #FF69B4 90%)',
-              },
-            }}
-          >
-            Save Outfit
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={<SaveIcon />}
+              onClick={() => setShowDatePicker(true)}
+              sx={{
+                background: 'linear-gradient(45deg, #FF69B4 30%, #FFB6C1 90%)',
+                borderRadius: 20,
+                boxShadow: '0 3px 5px 2px rgba(255, 105, 180, .3)',
+                color: 'white',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #FF1493 30%, #FF69B4 90%)',
+                },
+              }}
+            >
+              Add to Calendar
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<SaveIcon />}
+              onClick={saveOutfit}
+              sx={{
+                background: 'linear-gradient(45deg, #FF69B4 30%, #FFB6C1 90%)',
+                borderRadius: 20,
+                boxShadow: '0 3px 5px 2px rgba(255, 105, 180, .3)',
+                color: 'white',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #FF1493 30%, #FF69B4 90%)',
+                },
+              }}
+            >
+              Save Outfit
+            </Button>
+          </Box>
         )}
       </Box>
 
@@ -235,6 +275,34 @@ const OutfitCreator = () => {
           </Grid>
         ))}
       </Grid>
+
+      <Dialog open={showDatePicker} onClose={() => setShowDatePicker(false)}>
+        <DialogTitle sx={{ color: '#FF69B4' }}>Choose a Date</DialogTitle>
+        <DialogContent>
+          <TextField
+            type="date"
+            value={selectedDate || ''}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDatePicker(false)} sx={{ color: '#FF69B4' }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={saveOutfitToCalendar}
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(45deg, #FF69B4 30%, #FFB6C1 90%)',
+              color: 'white',
+            }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

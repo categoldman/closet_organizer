@@ -3,9 +3,11 @@
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/security/JwtTokenProvider.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/repository/UserRepository.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/security/UserPrincipal.java
+/Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/model/OutfitHistory.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/exception/GlobalExceptionHandler.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/model/ClothingItem.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/security/JwtAuthenticationFilter.java
+/Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/repository/OutfitHistoryRepository.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/model/User.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/payload/SignUpRequest.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/controller/FileController.java
@@ -16,3 +18,4 @@
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/controller/ClothingItemController.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/repository/ClothingItemRepository.java
 /Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/config/SecurityConfig.java
+/Users/catherinegoldman/Documents/CascadeProjects/closetOrganizer/java/src/main/java/com/closetorganizer/app/controller/OutfitHistoryController.java
